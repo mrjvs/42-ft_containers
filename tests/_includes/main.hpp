@@ -8,6 +8,7 @@
 #include "list.hpp"
 #include "orderedList.hpp"
 #include "multimap.hpp"
+#include "map.hpp"
 #include <vector>
 #include <unistd.h>
 #include <iostream>
@@ -23,5 +24,6 @@ void	end_test();
 void list_tests();
 void ordered_list_tests();
 void multimap_test();
+void map_test();
 
 #endif //MAIN_HPP

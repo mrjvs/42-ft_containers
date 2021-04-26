@@ -101,26 +101,28 @@ namespace ft {
 	public:
 		typedef listIterator<value_type, difference_type, reference, pointer>				iterator;
 		typedef listIterator<value_type, difference_type, const_reference, const_pointer>	const_iterator;
-		typedef std::reverse_iterator<iterator>												reverse_iterator;
+		typedef std::reverse_iterator<iterator>												reverse_iterator; // TODO remove reverse_iterator dependency
 		typedef std::reverse_iterator<const_iterator>										const_reverse_iterator;
 
 	private:
+		typedef typename allocator_type::template rebind<listNode<value_type> >::other	node_allocator;
+		allocator_type			_allocator;
+		node_allocator			_nodeAllocator;
 		listNode<value_type>	*_endNode;
 		listNode<value_type>	*_front;
 		listNode<value_type>	*_back;
 
 	public:
 		// constructors & destructor
-		// TODO allocator in constructors
-		explicit list(): _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {}
-		explicit list(size_type n, const value_type& val = value_type()): _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {
+		explicit list(const allocator_type& alloc = allocator_type()): _allocator(alloc), _nodeAllocator(_allocator), _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {}
+		explicit list(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()): _allocator(alloc), _nodeAllocator(_allocator), _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {
 			assign(n, val);
 		}
 		template <class InputIterator>
-		list(InputIterator first, InputIterator last): _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {
+		list(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()): _allocator(alloc), _nodeAllocator(_allocator), _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {
 			assign<InputIterator>(first, last);
 		}
-		list(const list& x): _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {
+		list(const list& x): _allocator(), _nodeAllocator(), _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {
 			operator=(x);
 		}
 		~list() {
@@ -131,6 +133,8 @@ namespace ft {
 		list	&operator=(const list& x) {
 			if (&x == this)
 				return *this;
+			_allocator = x._allocator;
+			_nodeAllocator = x._nodeAllocator;
 			clear();
 			assign(x.begin(), x.end());
 			return *this;
@@ -157,7 +161,7 @@ namespace ft {
 			return out;
 		}
 		size_type max_size() const {
-			return std::numeric_limits<size_type>::max();
+			return std::numeric_limits<size_type>::max(); // TODO remove numeric_limits?
 		}
 
 		// access
@@ -179,7 +183,8 @@ namespace ft {
 			erase(begin(), end());
 		}
 		void	push_front(const value_type& val) {
-			listNode<value_type> *newNode = new listNode<value_type>(val, _front);
+			listNode<value_type> *newNode = _nodeAllocator.allocate(1);
+			_nodeAllocator.construct(newNode, listNode<value_type>(val, _front));
 			_front->prev = newNode;
 			_front = newNode;
 		}
@@ -187,10 +192,12 @@ namespace ft {
 			listNode<value_type> *detachedNode = _front;
 			_front = _front->next;
 			_front->prev = NULL;
-			delete detachedNode;
+			_nodeAllocator.destroy(detachedNode);
+			_nodeAllocator.deallocate(detachedNode, 1);
 		}
 		void	push_back(const value_type& val) {
-			listNode<value_type> *newNode = new listNode<value_type>(val, _back);
+			listNode<value_type> *newNode = _nodeAllocator.allocate(1);
+			_nodeAllocator.construct(newNode, listNode<value_type>(val, _back));
 			if (_back->prev != NULL) {
 				_back->prev->next = newNode;
 				newNode->prev = _back->prev;
@@ -208,6 +215,8 @@ namespace ft {
 				_back->prev->next = _back;
 			if (_front == detachedNode)
 				_front = detachedNode->next;
+			_nodeAllocator.destroy(detachedNode);
+			_nodeAllocator.deallocate(detachedNode, 1);
 		}
 		void	assign(size_type n, const value_type& val) {
 			clear();
@@ -230,6 +239,8 @@ namespace ft {
 				_back->prev->next = _back;
 			if (_front == detachedNode)
 				_front = detachedNode->next;
+			_nodeAllocator.destroy(detachedNode);
+			_nodeAllocator.deallocate(detachedNode, 1);
 			return position;
 		}
 		iterator erase(iterator first, iterator last) {
@@ -238,7 +249,7 @@ namespace ft {
 			return last;
 		}
 		void swap(list& x) {
-			std::swap(x._endNode, _endNode);
+			std::swap(x._endNode, _endNode); // TODO dont use std::swap
 			std::swap(x._back, _back);
 			std::swap(x._front, _front);
 		}
@@ -250,12 +261,13 @@ namespace ft {
 			}
 			else if (s > n) {
 				iterator toDelete = begin();
-				std::advance(toDelete, n);
+				std::advance(toDelete, n); // TODO dont use std::advance
 				erase(toDelete, end());
 			}
 		}
 		iterator insert(iterator position, const value_type& val) {
-			listNode<value_type> *newNode = new listNode<value_type>(val, position._node->next, position._node);
+			listNode<value_type> *newNode = _nodeAllocator.allocate(1);
+			_nodeAllocator.construct(newNode, listNode<value_type>(val, position._node->next, position._node));
 			position._node->next->prev = newNode;
 			position._node->next = newNode;
 			return ++position;
@@ -291,10 +303,123 @@ namespace ft {
 		}
 
 		// operations
-		// TODO do operations
-		// TODO use allocator for NEW and DELETE
-		// TODO exceptions
-		// TODO no STL
+		void splice(iterator position, list &x) {
+			splice(position, x, x.begin(), x.end());
+		}
+		void splice(iterator position, list &x, iterator i) {
+			if (&x == this) return;
+			listNode<value_type> *node = i._node;
+			// detach from previous list
+			if (node->prev != NULL)
+				node->prev->next = node->next;
+			node->next->prev = node->prev;
+
+			// attach to new list
+			node->next = position._node;
+			node->prev = position._node->prev;
+			if (position._node->prev)
+				position._node->prev->next = node;
+			position._node->prev = node;
+		}
+		void splice(iterator position, list &x, iterator first, iterator last) {
+			if (&x == this) return;
+			for (; first != last; ++first)
+				splice(position, x, first);
+		}
+		void remove(const value_type& val) {
+			for (iterator it = begin(); it != end();) {
+				if (*it == val)
+					it = erase(it);
+				else
+					++it;
+			}
+		}
+		template <class Predicate>
+		void remove_if(Predicate pred) {
+			for (iterator it = begin(); it != end();) {
+				if (pred(*it))
+					it = erase(it);
+				else
+					++it;
+			}
+		}
+		void unique() {
+			iterator it = begin();
+			iterator it2 = begin();
+			if (it == end() || ++it2 == end()) return;
+			while (it2 != end()) {
+				if (*it == *it2)
+					it2 = erase(it2);
+				else {
+					++it;
+					++it2;
+				}
+			}
+		}
+		template <class BinaryPredicate>
+		void unique(BinaryPredicate binary_pred) {
+			iterator it = begin();
+			iterator it2 = begin();
+			if (it == end() || ++it2 == end()) return;
+			while (it2 != end()) {
+				if (binary_pred(*it,*it2))
+					it2 = erase(it2);
+				else {
+					++it;
+					++it2;
+				}
+			}
+		}
+		void merge(list& x) {
+			if (&x == this) return;
+			iterator x_it = x.begin();
+			iterator this_it = begin();
+			if (x_it == x.end()) return;
+			while (this_it != end()) {
+				if (!(*x_it < *this_it)) {
+					splice(this_it, x, x_it);
+					x_it = x.begin();
+					if (x_it == x.end()) return;
+				}
+				else
+					++this_it;
+			}
+			// move the remainder
+			splice(end(), x);
+		}
+		template <class Compare>
+		void merge(list& x, Compare comp) {
+			if (&x == this) return;
+			iterator x_it = x.begin();
+			iterator this_it = begin();
+			if (x_it == x.end()) return;
+			while (this_it != end()) {
+				if (!comp(*x_it, *this_it)) {
+					splice(this_it, x, x_it);
+					x_it = x.begin();
+					if (x_it == x.end()) return;
+				}
+				else
+					++this_it;
+			}
+			// move the remainder
+			splice(end(), x);
+		}
+		void sort() {
+			// TODO sort logic
+		}
+		template <class Compare>
+		void sort(Compare comp) {
+			// TODO sort logic
+		}
+		void reverse() {
+			// TODO reverse logic
+		}
+
+		// observers
+		allocator_type	get_allocator() const {
+			return _allocator;
+		}
 	};
 
 	// non member functions

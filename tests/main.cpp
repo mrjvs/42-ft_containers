@@ -8,5 +8,6 @@ int main() {
     list_tests();
 	ordered_list_tests();
 	multimap_test();
+	map_test();
     return 0;
 }
