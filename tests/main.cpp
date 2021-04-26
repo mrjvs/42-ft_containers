@@ -12,5 +12,6 @@ int main() {
 	multiset_test();
 	set_test();
 	stack_test();
+	queue_test();
     return 0;
 }

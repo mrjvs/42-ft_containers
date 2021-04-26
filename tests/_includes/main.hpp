@@ -12,6 +12,7 @@
 #include "multiset.hpp"
 #include "set.hpp"
 #include "stack.hpp"
+#include "queue.hpp"
 #include <vector>
 #include <unistd.h>
 #include <iostream>
@@ -31,5 +32,6 @@ void map_test();
 void set_test();
 void multiset_test();
 void stack_test();
+void queue_test();
 
 #endif //MAIN_HPP
