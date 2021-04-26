@@ -11,6 +11,7 @@
 #include "map.hpp"
 #include "multiset.hpp"
 #include "set.hpp"
+#include "stack.hpp"
 #include <vector>
 #include <unistd.h>
 #include <iostream>
@@ -29,5 +30,6 @@ void multimap_test();
 void map_test();
 void set_test();
 void multiset_test();
+void stack_test();
 
 #endif //MAIN_HPP

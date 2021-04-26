@@ -11,5 +11,6 @@ int main() {
 	map_test();
 	multiset_test();
 	set_test();
+	stack_test();
     return 0;
 }
