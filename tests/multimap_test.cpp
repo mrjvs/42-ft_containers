@@ -176,6 +176,7 @@ static void executionNonUsedTests() {
 		// observers
 		(void)l1.key_comp();
 		(void)l1.value_comp();
+		(void)l1.get_allocator();
 	}
 	end_test();
 }

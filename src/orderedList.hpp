@@ -29,20 +29,18 @@ namespace ft {
 		typedef typename list_type::const_reverse_iterator	const_reverse_iterator;
 
 	private:
-		allocator_type _alloc;
 		value_compare _compare;
 
 	public:
 		// constructors & destructor
-		explicit orderedList(const value_compare& comp = value_compare(), const allocator_type& alloc = allocator_type()): _list(), _alloc(alloc), _compare(comp) {}
-		orderedList(const orderedList& x): _list(x._list), _alloc(x._alloc), _compare(x._compare) {}
+		explicit orderedList(const value_compare& comp = value_compare(), const allocator_type& alloc = allocator_type()): _list(alloc), _compare(comp) {}
+		orderedList(const orderedList& x): _list(x._list), _compare(x._compare) {}
 		~orderedList() {}
 
 		// operators
 		orderedList	&operator=(const orderedList& x) {
 			if (&x == this)
 				return *this;
-			_alloc = x._alloc;
 			_compare = x._compare;
 			_list = x._list;
 			return *this;
@@ -158,6 +156,14 @@ namespace ft {
 		}
 		void swap(orderedList &x) {
 			_list.swap(x._list);
+		}
+
+		// observers
+		value_compare value_comp() const {
+			return _compare;
+		}
+		allocator_type get_allocator() const {
+			return _list.get_allocator();
 		}
 	};
 

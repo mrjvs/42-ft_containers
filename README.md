@@ -14,5 +14,5 @@ remaking some c++ containers from scratch (poorly)
  - [ ] `ft::vector`
  - [X] `ft::multimap`
  - [ ] `ft::deque`
- - [ ] `ft::set`
- - [ ] `ft::multiset`
+ - [X] `ft::set`
+ - [X] `ft::multiset`

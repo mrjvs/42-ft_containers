@@ -121,6 +121,9 @@ namespace ft {
 		value_compare value_comp() const {
 			return _map.value_comp();
 		}
+		allocator_type get_allocator() const {
+			return _map.get_allocator();
+		}
 
 		// operations
 		iterator find(const key_type& k) {

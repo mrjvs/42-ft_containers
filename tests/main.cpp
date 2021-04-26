@@ -9,5 +9,7 @@ int main() {
 	ordered_list_tests();
 	multimap_test();
 	map_test();
+	multiset_test();
+	set_test();
     return 0;
 }

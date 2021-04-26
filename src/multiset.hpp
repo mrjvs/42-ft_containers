@@ -2,45 +2,25 @@
 // Created by jelle on 4/25/2021.
 //
 
-#ifndef MULTIMAP_HPP
-#define MULTIMAP_HPP
+#ifndef MULTISET_HPP
+#define MULTISET_HPP
 
 #include "orderedList.hpp"
 
 namespace ft {
 
-	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<std::pair<const Key,T> > >
-	class multimap {
-
-	private:
-		template <class Type, class CompareObj>
-		class value_compare_struct {
-		private:
-			CompareObj _compare;
-
-		public:
-			value_compare_struct(const CompareObj &comp = CompareObj()): _compare(comp) {}
-			value_compare_struct(const value_compare_struct &x): _compare(x._compare) {}
-			bool operator() (const Type& x, const Type& y) const {
-				return _compare(x.first, y.first);
-			}
-		};
-
+	template <class T, class Compare = std::less<T>, class Alloc = std::allocator<T> >
+	class multiset {
 	public:
-		typedef Key														key_type;
-		typedef T														mapped_type;
-		typedef typename std::pair<const key_type, mapped_type>			value_type;
+		typedef T														key_type;
+		typedef T														value_type;
 		typedef Compare													key_compare;
-		typedef value_compare_struct<value_type, key_compare>			value_compare;
+		typedef Compare													value_compare;
 		typedef Alloc													allocator_type;
 
 	private:
-		value_type	createKeySearch(const key_type &key) const {
-			return value_type(key, mapped_type());
-		}
 		typedef orderedList<value_type, value_compare, allocator_type>	list_type;
 		list_type	_list;
-		key_compare _compare;
 
 	public:
 		typedef typename list_type::reference				reference;
@@ -55,19 +35,18 @@ namespace ft {
 		typedef typename list_type::const_reverse_iterator	const_reverse_iterator;
 
 		// constructors & destructor
-		explicit multimap (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): _list(value_compare(comp), alloc), _compare(comp) {}
+		explicit multiset(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): _list(comp, alloc) {}
 		template <class InputIterator>
-		multimap (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): _list(value_compare(comp), alloc), _compare(comp) {
+		multiset(InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()): _list(comp, alloc) {
 			insert(first, last);
 		}
-		multimap(const multimap& x): _list(x._list), _compare(x._compare) {}
-		~multimap() {}
+		multiset(const multiset& x): _list(x._list) {}
+		~multiset() {}
 
 		// operators
-		multimap	&operator=(const multimap& x) {
+		multiset	&operator=(const multiset& x) {
 			if (&x == this)
 				return *this;
-			_compare = x._compare;
 			_list = x._list;
 			return *this;
 		};
@@ -112,8 +91,8 @@ namespace ft {
 		void erase(iterator position) {
 			_list.erase(position);
 		}
-		size_type erase(const key_type& k) {
-			std::pair<iterator, iterator> its = _list.equal_range(createKeySearch(k));
+		size_type erase(const value_type& val) {
+			std::pair<iterator, iterator> its = _list.equal_range(val);
 			iterator it = its.first;
 			size_type i = 0;
 			while (it != its.second) {
@@ -126,7 +105,7 @@ namespace ft {
 			while (first != last)
 				first = _list.erase(first);
 		}
-		void swap(multimap &x) {
+		void swap(multiset &x) {
 			_list.swap(x._list);
 		}
 		void clear() {
@@ -135,7 +114,7 @@ namespace ft {
 
 		// observers
 		key_compare key_comp() const {
-			return _compare;
+			return _list.value_comp();
 		}
 		value_compare value_comp() const {
 			return _list.value_comp();
@@ -145,39 +124,27 @@ namespace ft {
 		}
 
 		// operations
-		iterator find(const key_type& k) {
-			return _list.get(createKeySearch(k));
+		const_iterator find(const value_type& val) const {
+			return _list.get(val);
 		}
-		const_iterator find(const key_type& k) const {
-			return _list.get(createKeySearch(k));
-		}
-		size_type count(const key_type& k) const {
-			std::pair<const_iterator, const_iterator> its = _list.equal_range(createKeySearch(k));
+		size_type count(const value_type& val) const {
+			std::pair<const_iterator, const_iterator> its = _list.equal_range(val);
 			size_type i = 0;
 			for (const_iterator it = its.first; it != its.second; ++it)
 				++i;
 			return i;
 		}
-		iterator lower_bound(const key_type& k) {
-			return _list.lower_bound(createKeySearch(k));
+		const_iterator lower_bound(const value_type& val) const {
+			return _list.lower_bound(val);
 		}
-		const_iterator lower_bound(const key_type& k) const {
-			return _list.lower_bound(createKeySearch(k));
+		const_iterator upper_bound(const value_type& val) const {
+			return _list.upper_bound(val);
 		}
-		iterator upper_bound(const key_type& k) {
-			return _list.upper_bound(createKeySearch(k));
-		}
-		const_iterator upper_bound(const key_type& k) const {
-			return _list.upper_bound(createKeySearch(k));
-		}
-		std::pair<const_iterator,const_iterator> equal_range(const key_type& k) const {
-			return _list.equal_range(createKeySearch(k));
-		}
-		std::pair<iterator,iterator> equal_range(const key_type& k) {
-			return _list.equal_range(createKeySearch(k));
+		std::pair<const_iterator,const_iterator> equal_range(const value_type& val) const {
+			return _list.equal_range(val);
 		}
 	};
 
 }
 
-#endif //MULTIMAP_HPP
+#endif //MULTISET_HPP
