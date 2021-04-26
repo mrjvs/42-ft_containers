@@ -9,8 +9,8 @@ remaking some c++ containers from scratch (poorly)
  - [ ] full test coverage for `ft::orderedList`
  - [ ] `ft::list`
  - [X] `ft::map`
- - [ ] `ft::stack`
- - [ ] `ft::queue`
+ - [X] `ft::stack`
+ - [X] `ft::queue`
  - [ ] `ft::vector`
  - [X] `ft::multimap`
  - [ ] `ft::deque`
