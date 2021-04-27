@@ -122,32 +122,31 @@ private:
 			// lower bound tests
 			if (l1.lower_bound(9) != --(l1.end())) fail_test();
 			if (l1.lower_bound(5) != ++(l1.begin())) fail_test();
-			if (l1.lower_bound(1) != l1.end()) fail_test();
+			if (l1.lower_bound(1) != l1.begin()) fail_test();
 			if (l2.lower_bound(9) != --(l2.end())) fail_test();
 			if (l2.lower_bound(5) != ++(l2.begin())) fail_test();
-			if (l2.lower_bound(1) != l2.end()) fail_test();
+			if (l2.lower_bound(1) != l2.begin()) fail_test();
 
 			// upper bound tests
 			if (l1.upper_bound(9) != l1.end()) fail_test();
 			if (l1.upper_bound(5) != ++ ++ ++(l1.begin())) fail_test();
-			if (l1.upper_bound(1) != l1.end()) fail_test();
+			if (l1.upper_bound(1) != l1.begin()) fail_test();
 			if (l2.upper_bound(9) != l2.end()) fail_test();
 			if (l2.upper_bound(5) != ++ ++ ++(l2.begin())) fail_test();
-			if (l2.upper_bound(1) != l2.end()) fail_test();
-
+			if (l2.upper_bound(1) != l2.begin()) fail_test();
 
 			// equal range
 			if (l1.equal_range(9) !=PairIt(--(l1.end()), l1.end()))
 				fail_test();
 			if (l1.equal_range(5) != PairIt(++(l1.begin()), --(l1.end())))
 				fail_test();
-			if (l1.equal_range(1) != PairIt(l1.end(), l1.end()))
+			if (l1.equal_range(1) != PairIt(l1.begin(), l1.begin()))
 				fail_test();
 			if (l2.equal_range(9) != PairCIt(--(l2.end()), l2.end()))
 				fail_test();
 			if (l2.equal_range(5) != PairCIt(++(l2.begin()), --(l2.end())))
 				fail_test();
-			if (l2.equal_range(1) != PairCIt(l2.end(), l2.end()))
+			if (l2.equal_range(1) != PairCIt(l2.begin(), l2.begin()))
 				fail_test();
 		}
 		end_test();

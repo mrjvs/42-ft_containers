@@ -86,35 +86,29 @@ namespace ft {
 
 		// access
 		iterator upper_bound(const value_type& k) {
-			bool foundEqual = false;
 			for (iterator it = begin(); it != end(); ++it) {
-				if (!foundEqual && !_compare(k, *it) && !_compare(*it, k))
-					foundEqual = true;
-				if (foundEqual && !(!_compare(k, *it) && !_compare(*it, k)))
+				if (_compare(k, *it))
 					return it;
 			}
 			return end();
 		}
 		const_iterator upper_bound(const value_type& k) const {
-			bool foundEqual = false;
 			for (const_iterator it = begin(); it != end(); ++it) {
-				if (!foundEqual && !_compare(k, *it) && !_compare(*it, k))
-					foundEqual = true;
-				if (foundEqual && !(!_compare(k, *it) && !_compare(*it, k)))
+				if (_compare(k, *it))
 					return it;
 			}
 			return end();
 		}
 		iterator lower_bound(const value_type& k) {
 			for (iterator it = begin(); it != end(); ++it) {
-				if (!_compare(k, *it) && !_compare(*it, k))
+				if (!_compare(*it, k))
 					return it;
 			}
 			return end();
 		}
 		const_iterator lower_bound(const value_type& k) const {
 			for (const_iterator it = begin(); it != end(); ++it) {
-				if (!_compare(k, *it) && !_compare(*it, k))
+				if (!_compare(*it, k))
 					return it;
 			}
 			return end();
@@ -126,10 +120,18 @@ namespace ft {
 			return ft::pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key));
 		}
 		iterator get(const value_type &key) {
-			return lower_bound(key);
+			iterator out = lower_bound(key);
+			// if end or not equal
+			if (out == end() || !(!_compare(*out, key) && !_compare(key, *out)))
+				return end();
+			return out;
 		}
 		const_iterator get(const value_type &key) const {
-			return lower_bound(key);
+			const_iterator out = lower_bound(key);
+			// if end or not equal
+			if (out == end() || !(!_compare(*out, key) && !_compare(key, *out)))
+				return end();
+			return out;
 		}
 		bool has(const value_type &key) const {
 			return get(key) != end();
@@ -143,12 +145,7 @@ namespace ft {
 			return _list.erase(position);
 		}
 		iterator insert(const value_type &item) {
-			for (iterator it = begin(); it != end(); ++it) {
-				if (!_compare(item, *it))
-					return _list.insert(it, item);
-			}
-			// push back if end
-			return _list.insert(end(), item);
+			return _list.insert(upper_bound(item), item);
 		}
 		void swap(orderedList &x) {
 			_list.swap(x._list);

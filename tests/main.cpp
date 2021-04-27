@@ -74,21 +74,23 @@ static void argParser(int argc, char *argv[]) {
 	// parse input tests
 	std::vector<std::string>	tests;
 	if (argc == 2) {
-		for (std::set<testType>::iterator it = types.begin(); it != types.end(); ++it)
-			tests.push_back(it->type);
+		for (std::set<testType, testTypeCompare>::iterator it = types.begin(); it != types.end(); ++it) {
+			if ((it->ftOnly && type == "FT") || !it->ftOnly)
+				tests.push_back(it->type);
+		}
 	}
 	else {
 		for (int i = 2; i < argc; ++i) {
-			if (types.find(std::string(argv[i])) == types.end()) {
+			std::set<testType, testTypeCompare>::iterator	test = types.find(std::string(argv[i]));
+			if (test == types.end()) {
 				std::cerr << "unrecognized test: '" << argv[i] << "'\n\n";
 				printUsage(std::cerr);
 				return;
 			}
-			tests.push_back(std::string(argv[i]));
 		}
 	}
 
-	// execute tests
+	// check for type mismatches
 	for (std::vector<std::string>::iterator it = tests.begin(); it != tests.end(); ++it) {
 		testType test = *types.find(*it);
 		if (test.ftOnly && type != "FT") {
@@ -96,8 +98,12 @@ static void argParser(int argc, char *argv[]) {
 			printUsage(std::cerr);
 			return;
 		}
+	}
 
+	// execute tests
+	for (std::vector<std::string>::iterator it = tests.begin(); it != tests.end(); ++it) {
 		// execute test
+		testType test = *types.find(*it);
 		if (type == "STD") {
 			if (test.type == "list") list_tests<std::list<int>, std::list<testStruct> >().run();
 			else if (test.type == "multimap") multimap_tests<std::multimap<int, int>, std::pair<int, int>, std::pair<std::multimap<int, int>::iterator, std::multimap<int, int>::iterator>, std::pair<std::multimap<int, int>::const_iterator, std::multimap<int, int>::const_iterator> >().run();

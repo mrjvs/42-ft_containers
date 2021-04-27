@@ -155,8 +155,9 @@ namespace ft {
 		size_type count(const key_type& k) const {
 			ft::pair<const_iterator, const_iterator> its = _list.equal_range(createKeySearch(k));
 			size_type i = 0;
-			for (const_iterator it = its.first; it != its.second; ++it)
+			for (const_iterator it = its.first; it != its.second; ++it) {
 				++i;
+			}
 			return i;
 		}
 		iterator lower_bound(const key_type& k) {
