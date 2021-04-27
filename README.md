@@ -2,7 +2,7 @@
 remaking some c++ containers from scratch (poorly)
 
 ## usage
-1. add src as include library
+1. add /src as include folder
 2. include any file/container you need
 
 ## unit tests
