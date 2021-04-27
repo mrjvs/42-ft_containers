@@ -9,7 +9,7 @@
 
 namespace ft {
 
-	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<std::pair<const Key,T> > >
+	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
 	class map {
 	private:
 		typedef multimap<Key, T, Compare, Alloc>						list_type;
@@ -80,14 +80,14 @@ namespace ft {
 		}
 
 		// modifiers
-		std::pair<iterator,bool>	insert(const value_type& val) {
+		ft::pair<iterator,bool>	insert(const value_type& val) {
 			iterator it = _map.find(val.first);
 			// return existing value
 			if (it != end())
-				return std::pair<iterator,bool>(it,false);
+				return ft::pair<iterator,bool>(it,false);
 
 			// insert new value
-			return std::pair<iterator,bool>(_map.insert(val),true);
+			return ft::pair<iterator,bool>(_map.insert(val),true);
 		}
 		iterator insert(iterator position, const value_type& val) {
 			(void)position; // no binary search, so we ignore value
@@ -147,10 +147,10 @@ namespace ft {
 		const_iterator upper_bound(const key_type& k) const {
 			return _map.upper_bound(k);
 		}
-		std::pair<const_iterator,const_iterator> equal_range(const key_type& k) const {
+		ft::pair<const_iterator,const_iterator> equal_range(const key_type& k) const {
 			return _map.equal_range(k);
 		}
-		std::pair<iterator,iterator> equal_range(const key_type& k) {
+		ft::pair<iterator,iterator> equal_range(const key_type& k) {
 			return _map.equal_range(k);
 		}
 	};

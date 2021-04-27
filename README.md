@@ -2,8 +2,8 @@
 remaking some c++ containers from scratch (poorly)
 
 ## todos
- - [ ] use `ft::pair` instead of `std::pair`
  - [ ] make custom reverse iterators
+ - [X] make and use `ft::pair` instead of `std::pair`
  - [X] full test coverage for `ft::orderedList`
  - [X] remove all uses of `std::`
  - [X] use allocator for allocation (`allocator::rebind<Node<T>>::other(allocatorInstance)`)

@@ -82,14 +82,14 @@ namespace ft {
 		}
 
 		// modifiers
-		std::pair<iterator,bool>	insert(const value_type& val) {
+		ft::pair<iterator,bool>	insert(const value_type& val) {
 			iterator it = _find(val);
 			// return existing value
 			if (it != end())
-				return std::pair<iterator,bool>(it,false);
+				return ft::pair<iterator,bool>(it,false);
 
 			// insert new value
-			return std::pair<iterator,bool>(_set.insert(val),true);
+			return ft::pair<iterator,bool>(_set.insert(val),true);
 		}
 		iterator insert(iterator position, const value_type& val) {
 			(void)position; // no binary search, so we ignore value
@@ -140,7 +140,7 @@ namespace ft {
 		const_iterator upper_bound(const value_type& val) const {
 			return _set.upper_bound(val);
 		}
-		std::pair<const_iterator,const_iterator> equal_range(const value_type& val) const {
+		ft::pair<const_iterator,const_iterator> equal_range(const value_type& val) const {
 			return _set.equal_range(val);
 		}
 	};

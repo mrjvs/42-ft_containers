@@ -117,8 +117,8 @@ static void accessTests() {
 		if (l2.upper_bound(42) != l2.end()) fail_test();
 
 		// equal range
-		std::pair<ft::orderedList<int>::iterator, ft::orderedList<int>::iterator> ret;
-		std::pair<ft::orderedList<int>::const_iterator, ft::orderedList<int>::const_iterator> ret_const;
+		ft::pair<ft::orderedList<int>::iterator, ft::orderedList<int>::iterator> ret;
+		ft::pair<ft::orderedList<int>::const_iterator, ft::orderedList<int>::const_iterator> ret_const;
 		ret = l1.equal_range(1);
 		ret_const = l2.equal_range(1);
 		if (l1.lower_bound(1) != ret.first || l1.upper_bound(1) != ret.second) fail_test();

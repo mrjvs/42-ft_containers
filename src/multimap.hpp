@@ -6,10 +6,11 @@
 #define MULTIMAP_HPP
 
 #include "orderedList.hpp"
+#include "pair.hpp"
 
 namespace ft {
 
-	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<std::pair<const Key,T> > >
+	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
 	class multimap {
 
 	private:
@@ -29,7 +30,7 @@ namespace ft {
 	public:
 		typedef Key														key_type;
 		typedef T														mapped_type;
-		typedef typename std::pair<const key_type, mapped_type>			value_type;
+		typedef typename ft::pair<const key_type, mapped_type>			value_type;
 		typedef Compare													key_compare;
 		typedef value_compare_struct<value_type, key_compare>			value_compare;
 		typedef Alloc													allocator_type;
@@ -113,7 +114,7 @@ namespace ft {
 			_list.erase(position);
 		}
 		size_type erase(const key_type& k) {
-			std::pair<iterator, iterator> its = _list.equal_range(createKeySearch(k));
+			ft::pair<iterator, iterator> its = _list.equal_range(createKeySearch(k));
 			iterator it = its.first;
 			size_type i = 0;
 			while (it != its.second) {
@@ -152,7 +153,7 @@ namespace ft {
 			return _list.get(createKeySearch(k));
 		}
 		size_type count(const key_type& k) const {
-			std::pair<const_iterator, const_iterator> its = _list.equal_range(createKeySearch(k));
+			ft::pair<const_iterator, const_iterator> its = _list.equal_range(createKeySearch(k));
 			size_type i = 0;
 			for (const_iterator it = its.first; it != its.second; ++it)
 				++i;
@@ -170,10 +171,10 @@ namespace ft {
 		const_iterator upper_bound(const key_type& k) const {
 			return _list.upper_bound(createKeySearch(k));
 		}
-		std::pair<const_iterator,const_iterator> equal_range(const key_type& k) const {
+		ft::pair<const_iterator,const_iterator> equal_range(const key_type& k) const {
 			return _list.equal_range(createKeySearch(k));
 		}
-		std::pair<iterator,iterator> equal_range(const key_type& k) {
+		ft::pair<iterator,iterator> equal_range(const key_type& k) {
 			return _list.equal_range(createKeySearch(k));
 		}
 	};

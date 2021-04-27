@@ -47,7 +47,7 @@ static void modifierTests() {
 	{
 		ft::set<int> l1;
 		// insert single
-		std::pair<ft::set<int>::iterator,bool> ret = l1.insert(3);
+		ft::pair<ft::set<int>::iterator,bool> ret = l1.insert(3);
 		if (ret.first != l1.begin() || ret.second != true) fail_test();
 		ret = l1.insert(3);
 		if (ret.first != l1.begin() || ret.second != false) fail_test();

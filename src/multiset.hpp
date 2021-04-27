@@ -92,7 +92,7 @@ namespace ft {
 			_list.erase(position);
 		}
 		size_type erase(const value_type& val) {
-			std::pair<iterator, iterator> its = _list.equal_range(val);
+			ft::pair<iterator, iterator> its = _list.equal_range(val);
 			iterator it = its.first;
 			size_type i = 0;
 			while (it != its.second) {
@@ -128,7 +128,7 @@ namespace ft {
 			return _list.get(val);
 		}
 		size_type count(const value_type& val) const {
-			std::pair<const_iterator, const_iterator> its = _list.equal_range(val);
+			ft::pair<const_iterator, const_iterator> its = _list.equal_range(val);
 			size_type i = 0;
 			for (const_iterator it = its.first; it != its.second; ++it)
 				++i;
@@ -140,7 +140,7 @@ namespace ft {
 		const_iterator upper_bound(const value_type& val) const {
 			return _list.upper_bound(val);
 		}
-		std::pair<const_iterator,const_iterator> equal_range(const value_type& val) const {
+		ft::pair<const_iterator,const_iterator> equal_range(const value_type& val) const {
 			return _list.equal_range(val);
 		}
 	};

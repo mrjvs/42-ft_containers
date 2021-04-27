@@ -24,16 +24,16 @@ static void compareMap(ft::map<Key,T> list, const std::string &result) {
 static void constructTests() {
 	test("Basic constructor tests");
 	{
-		std::vector<std::pair<int, int> > vect;
-		vect.push_back(std::pair<int,int>(5, 42));
-		vect.push_back(std::pair<int,int>(1, 69));
+		std::vector<ft::pair<int, int> > vect;
+		vect.push_back(ft::pair<int,int>(5, 42));
+		vect.push_back(ft::pair<int,int>(1, 69));
 
 		ft::map<int,int> l1;
 		ft::map<int,int> l2(vect.begin(), vect.end());
 		ft::map<int,int> l3;
 		l3 = l2;
 		ft::map<int,int> l4(l2);
-		l4.insert(std::pair<int,int>(3, 3));
+		l4.insert(ft::pair<int,int>(3, 3));
 		compareMap<int,int>(l1, "");
 		compareMap<int,int>(l2, "(1,69)-(5,42)");
 		compareMap<int,int>(l3, "(1,69)-(5,42)");
@@ -47,19 +47,19 @@ static void modifierTests() {
 	{
 		ft::map<int,int> l1;
 		// insert single
-		std::pair<ft::map<int,int>::iterator,bool> ret = l1.insert(std::pair<int,int>(3, 3));
+		ft::pair<ft::map<int,int>::iterator,bool> ret = l1.insert(ft::pair<int,int>(3, 3));
 		if (ret.first != l1.begin() || ret.second != true) fail_test();
-		ret = l1.insert(std::pair<int,int>(3, 69));
+		ret = l1.insert(ft::pair<int,int>(3, 69));
 		if (ret.first != l1.begin() || ret.second != false) fail_test();
 
 		// insert with hint
-		ft::map<int,int>::iterator it = l1.insert(l1.begin(), std::pair<int,int>(6, -42));
+		ft::map<int,int>::iterator it = l1.insert(l1.begin(), ft::pair<int,int>(6, -42));
 		if (it != ++(l1.begin())) fail_test();
 
 		// insert with iterator range
-		std::vector<std::pair<int, int> > vect;
-		vect.push_back(std::pair<int,int>(5, 42));
-		vect.push_back(std::pair<int,int>(1, 69));
+		std::vector<ft::pair<int, int> > vect;
+		vect.push_back(ft::pair<int,int>(5, 42));
+		vect.push_back(ft::pair<int,int>(1, 69));
 		l1.insert(vect.begin(), vect.end());
 
 		// compare end result

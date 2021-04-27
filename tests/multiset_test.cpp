@@ -128,9 +128,9 @@ static void operationTests() {
 		if (l2.upper_bound(1) != l2.end()) fail_test();
 
 		// equal range
-		if (l2.equal_range(9) != std::pair<ft::multiset<int>::const_iterator,ft::multiset<int>::const_iterator>(--(l2.end()), l2.end())) fail_test();
-		if (l2.equal_range(5) != std::pair<ft::multiset<int>::const_iterator,ft::multiset<int>::const_iterator>(++(l2.begin()), --(l2.end()))) fail_test();
-		if (l2.equal_range(1) != std::pair<ft::multiset<int>::const_iterator,ft::multiset<int>::const_iterator>(l2.end(), l2.end())) fail_test();
+		if (l2.equal_range(9) != ft::pair<ft::multiset<int>::const_iterator,ft::multiset<int>::const_iterator>(--(l2.end()), l2.end())) fail_test();
+		if (l2.equal_range(5) != ft::pair<ft::multiset<int>::const_iterator,ft::multiset<int>::const_iterator>(++(l2.begin()), --(l2.end()))) fail_test();
+		if (l2.equal_range(1) != ft::pair<ft::multiset<int>::const_iterator,ft::multiset<int>::const_iterator>(l2.end(), l2.end())) fail_test();
 	}
 	end_test();
 }

@@ -5,6 +5,9 @@
 #ifndef ORDEREDLIST_HPP
 #define ORDEREDLIST_HPP
 
+#include "list.hpp"
+#include "pair.hpp"
+
 namespace ft {
 
 	// class used as backend for any sorted data structures (like map & set)
@@ -116,11 +119,11 @@ namespace ft {
 			}
 			return end();
 		}
-		std::pair<iterator,iterator>	equal_range(const value_type &key) {
-			return std::pair<iterator, iterator>(lower_bound(key), upper_bound(key));
+		ft::pair<iterator,iterator>	equal_range(const value_type &key) {
+			return ft::pair<iterator, iterator>(lower_bound(key), upper_bound(key));
 		}
-		std::pair<const_iterator,const_iterator>	equal_range(const value_type &key) const {
-			return std::pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key));
+		ft::pair<const_iterator,const_iterator>	equal_range(const value_type &key) const {
+			return ft::pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key));
 		}
 		iterator get(const value_type &key) {
 			return lower_bound(key);
