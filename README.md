@@ -3,6 +3,9 @@ remaking some c++ containers from scratch (poorly)
 
 ## todos
  - [ ] make custom reverse iterators
+ - [ ] make normal makefile
+ - [ ] make tests for stdlib versions (for comparing)
+ - [X] no leaks
  - [X] make and use `ft::pair` instead of `std::pair`
  - [X] full test coverage for `ft::orderedList`
  - [X] remove all uses of `std::`
