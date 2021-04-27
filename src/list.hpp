@@ -5,13 +5,13 @@
 #ifndef LIST_HPP
 #define LIST_HPP
 
-#include <memory> // allocator
+#include <memory> // allocator and std::bad_alloc exception
+#include <exception> // custom exception class
 #include <iterator> // iterator category
-#include <limits> // max size
+#include "utils.hpp" // ft::less and ft::swap
 
 namespace ft {
 
-	// properties: sequence, double linked list, allocator
 	template <class T, class Alloc = std::allocator<T> > class list {
 	public:
 		typedef T											value_type;
@@ -47,6 +47,11 @@ namespace ft {
 			typedef std::bidirectional_iterator_tag	iterator_category;
 
 		private:
+			class _outOfBoundsException: public std::exception {
+				const char * what() const throw() {
+					return "Iterator: out of bounds";
+				}
+			};
 			listNode<value_type>	*_node;
 
 		public:
@@ -69,7 +74,7 @@ namespace ft {
 			}
 			listIterator	&operator++() {
 				if (_node->next == NULL)
-					throw std::exception(); // TODO exception
+					throw _outOfBoundsException();
 				_node = _node->next;
 				return *this;
 			}
@@ -80,7 +85,7 @@ namespace ft {
 			}
 			listIterator	&operator--() {
 				if (_node->prev == NULL)
-					throw std::exception(); // TODO exception
+					throw _outOfBoundsException();
 				_node = _node->prev;
 				return *this;
 			}
@@ -161,7 +166,7 @@ namespace ft {
 			return out;
 		}
 		size_type max_size() const {
-			return std::numeric_limits<size_type>::max(); // TODO remove numeric_limits?
+			return _nodeAllocator.max_size();
 		}
 
 		// access
@@ -249,9 +254,9 @@ namespace ft {
 			return last;
 		}
 		void swap(list& x) {
-			std::swap(x._endNode, _endNode); // TODO dont use std::swap
-			std::swap(x._back, _back);
-			std::swap(x._front, _front);
+			ft::swap(_endNode, x._endNode);
+			ft::swap(_back, x._back);
+			ft::swap(_front, x._front);
 		}
 		void resize(size_type n, value_type val = value_type()) {
 			size_type s = size();
@@ -261,7 +266,7 @@ namespace ft {
 			}
 			else if (s > n) {
 				iterator toDelete = begin();
-				std::advance(toDelete, n); // TODO dont use std::advance
+				for (;n > 0;--n) ++toDelete;
 				erase(toDelete, end());
 			}
 		}
@@ -278,7 +283,7 @@ namespace ft {
 			try {
 				for (; i < n; ++i)
 					position = insert(position, val);
-			} catch (const std::exception &e) {
+			} catch (const std::bad_alloc &e) {
 				// undo changes if failed to allocate
 				if (i > 0)
 					erase(++begin, ++position);
@@ -294,7 +299,7 @@ namespace ft {
 					position = insert(position, *first);
 					++i;
 				}
-			} catch (const std::exception &e) {
+			} catch (const std::bad_alloc &e) {
 				// undo changes if failed to allocate
 				if (i > 0)
 					erase(++begin, ++position);
@@ -313,6 +318,8 @@ namespace ft {
 			if (node->prev != NULL)
 				node->prev->next = node->next;
 			node->next->prev = node->prev;
+			if (x._front == node)
+				x._front = node->next;
 
 			// attach to new list
 			node->next = position._node;
@@ -320,11 +327,16 @@ namespace ft {
 			if (position._node->prev)
 				position._node->prev->next = node;
 			position._node->prev = node;
+			if (_front == position._node)
+				_front = node;
 		}
 		void splice(iterator position, list &x, iterator first, iterator last) {
 			if (&x == this) return;
-			for (; first != last; ++first)
-				splice(position, x, first);
+			while (first != last) {
+				iterator tmp = first;
+				++first;
+				splice(position, x, tmp);
+			}
 		}
 		void remove(const value_type& val) {
 			for (iterator it = begin(); it != end();) {
@@ -344,17 +356,7 @@ namespace ft {
 			}
 		}
 		void unique() {
-			iterator it = begin();
-			iterator it2 = begin();
-			if (it == end() || ++it2 == end()) return;
-			while (it2 != end()) {
-				if (*it == *it2)
-					it2 = erase(it2);
-				else {
-					++it;
-					++it2;
-				}
-			}
+			unique(ft::equal_to<value_type>());
 		}
 		template <class BinaryPredicate>
 		void unique(BinaryPredicate binary_pred) {
@@ -371,21 +373,7 @@ namespace ft {
 			}
 		}
 		void merge(list& x) {
-			if (&x == this) return;
-			iterator x_it = x.begin();
-			iterator this_it = begin();
-			if (x_it == x.end()) return;
-			while (this_it != end()) {
-				if (!(*x_it < *this_it)) {
-					splice(this_it, x, x_it);
-					x_it = x.begin();
-					if (x_it == x.end()) return;
-				}
-				else
-					++this_it;
-			}
-			// move the remainder
-			splice(end(), x);
+			merge(x, ft::less<value_type>());
 		}
 		template <class Compare>
 		void merge(list& x, Compare comp) {
@@ -394,7 +382,7 @@ namespace ft {
 			iterator this_it = begin();
 			if (x_it == x.end()) return;
 			while (this_it != end()) {
-				if (!comp(*x_it, *this_it)) {
+				if (comp(*x_it, *this_it)) {
 					splice(this_it, x, x_it);
 					x_it = x.begin();
 					if (x_it == x.end()) return;
@@ -405,15 +393,83 @@ namespace ft {
 			// move the remainder
 			splice(end(), x);
 		}
+	private:
+		iterator swap_items(iterator first, iterator second) {
+			if (first == second)
+				return first;
+			if (first == end() || second == end())
+				return first;
+
+			// front protection
+			if (first._node == _front)
+				_front = second._node;
+			else if (second._node == _front)
+				_front = first._node;
+
+			listNode<value_type>	*tmp;
+			// swap prev pointers
+			tmp = first._node->prev;
+			first._node->prev = second._node->prev;
+			second._node->prev =  tmp;
+
+			// swap next pointers
+			tmp = first._node->next;
+			first._node->next = second._node->next;
+			second._node->next = tmp;
+
+			// fix pointers, (if X points to X, then change it to Y)
+			if (second._node->next == second._node) second._node->next = first._node;
+			if (second._node->prev == second._node) second._node->prev = first._node;
+			if (first._node->next == first._node) first._node->next = second._node;
+			if (first._node->prev == first._node) first._node->prev = second._node;
+
+			// fix prev and next of the bunch
+			if (second._node->prev != NULL) second._node->prev->next = second._node;
+			if (first._node->prev != NULL) first._node->prev->next = first._node;
+			second._node->next->prev = second._node;
+			first._node->next->prev = first._node;
+			return second;
+		}
+
+	public:
 		void sort() {
-			// TODO sort logic
+			sort(ft::less<value_type>());
 		}
 		template <class Compare>
 		void sort(Compare comp) {
-			// TODO sort logic
+			size_type loops = size();
+			size_type advance = 0;
+			if (loops < 2) return;
+			// only do sort iteration if more than 1 item left
+			while (loops > 1) {
+				iterator a = begin();
+				iterator b = a;
+				size_type i = 0;
+				++b; // a = i, b = i+1;
+				while (i < loops-1) {
+					if (comp(*b, *a)) // if b is smaller than a, swap
+						a = swap_items(a,b);
+					a++;
+					b = a; // needed because b gets invalidated by swap_items
+					++b; // a = i, b = i+1
+					i++;
+				}
+				loops--; // count down loops
+			}
 		}
 		void reverse() {
-			// TODO reverse logic
+			iterator a = begin();
+			iterator b = end();
+			if (a == b) return; // no items
+			if (a == b--) return; // only one item
+
+			// reverse
+			while (a != b) {
+				a = swap_items(a, b++); // swap a and b
+				----b; // move b to original pos - 1
+				if (a == b) break; // prevent it from passing each other
+				a++; // increase a
+			}
 		}
 
 		// observers
