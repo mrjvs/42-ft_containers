@@ -123,10 +123,10 @@ namespace ft {
 			return std::pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key));
 		}
 		iterator get(const value_type &key) {
-			return equal_range(key).first;
+			return lower_bound(key);
 		}
 		const_iterator get(const value_type &key) const {
-			return equal_range(key).first;
+			return lower_bound(key);
 		}
 		bool has(const value_type &key) const {
 			return get(key) != end();
