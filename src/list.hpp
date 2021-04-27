@@ -273,10 +273,13 @@ namespace ft {
 		}
 		iterator insert(iterator position, const value_type& val) {
 			listNode<value_type> *newNode = _nodeAllocator.allocate(1);
-			_nodeAllocator.construct(newNode, listNode<value_type>(val, position._node->next, position._node));
-			position._node->next->prev = newNode;
-			position._node->next = newNode;
-			return ++position;
+			_nodeAllocator.construct(newNode, listNode<value_type>(val, position._node, position._node->prev));
+			if (newNode->prev != NULL)
+				newNode->prev->next = newNode;
+			if (_front == position._node)
+				_front = newNode;
+			position._node->prev = newNode;
+			return --position;
 		}
 		void insert(iterator position, size_type n, const value_type& val) {
 			size_type i = 0;
@@ -297,13 +300,13 @@ namespace ft {
 			iterator begin = position;
 			try {
 				for (; first != last; ++first) {
-					position = insert(position, *first);
+					begin = insert(position, *first);
 					++i;
 				}
 			} catch (const std::bad_alloc &e) {
 				// undo changes if failed to allocate
 				if (i > 0)
-					erase(++begin, ++position);
+					erase(begin, position);
 				throw;
 			}
 		}

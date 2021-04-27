@@ -23,15 +23,18 @@ void	start_test(const std::string &title, int num);
 void	start_batch(const std::string &prefix);
 void	fail_test();
 void	end_test();
+void	end_of_tests();
+
+#define test(str) start_test(str, ++num)
 
 // tests
-void list_tests();
-void ordered_list_tests();
-void multimap_test();
-void map_test();
-void set_test();
-void multiset_test();
-void stack_test();
-void queue_test();
+#include "list_test.hpp"
+#include "ordered_list_test.hpp"
+#include "multimap_test.hpp"
+#include "map_test.hpp"
+#include "multiset_test.hpp"
+#include "set_test.hpp"
+#include "queue_test.hpp"
+#include "stack_test.hpp"
 
 #endif //MAIN_HPP

@@ -144,18 +144,11 @@ namespace ft {
 		}
 		iterator insert(const value_type &item) {
 			for (iterator it = begin(); it != end(); ++it) {
-				if (!_compare(*it, item)) {
-					// push front if beginning, otherwise insert at position
-					if (it == begin()) {
-						_list.push_front(item);
-						return _list.begin();
-					}
-					return _list.insert(--it, item);
-				}
+				if (!_compare(item, *it))
+					return _list.insert(it, item);
 			}
 			// push back if end
-			_list.push_back(item);
-			return --(end());
+			return _list.insert(end(), item);
 		}
 		void swap(orderedList &x) {
 			_list.swap(x._list);
