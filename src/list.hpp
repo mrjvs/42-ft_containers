@@ -113,21 +113,22 @@ namespace ft {
 		typedef typename allocator_type::template rebind<listNode<value_type> >::other	node_allocator;
 		allocator_type			_allocator;
 		node_allocator			_nodeAllocator;
+		listNode<value_type>	_endNodeStack;
 		listNode<value_type>	*_endNode;
 		listNode<value_type>	*_front;
 		listNode<value_type>	*_back;
 
 	public:
 		// constructors & destructor
-		explicit list(const allocator_type& alloc = allocator_type()): _allocator(alloc), _nodeAllocator(_allocator), _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {}
-		explicit list(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()): _allocator(alloc), _nodeAllocator(_allocator), _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {
+		explicit list(const allocator_type& alloc = allocator_type()): _allocator(alloc), _nodeAllocator(_allocator), _endNodeStack(), _endNode(&_endNodeStack), _front(_endNode), _back(_endNode) {}
+		explicit list(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()): _allocator(alloc), _nodeAllocator(_allocator), _endNodeStack(), _endNode(&_endNodeStack), _front(_endNode), _back(_endNode) {
 			assign(n, val);
 		}
 		template <class InputIterator>
-		list(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()): _allocator(alloc), _nodeAllocator(_allocator), _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {
+		list(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()): _allocator(alloc), _nodeAllocator(_allocator), _endNodeStack(), _endNode(&_endNodeStack), _front(_endNode), _back(_endNode) {
 			assign<InputIterator>(first, last);
 		}
-		list(const list& x): _allocator(), _nodeAllocator(), _endNode(new listNode<value_type>()), _front(_endNode), _back(_endNode) {
+		list(const list& x): _allocator(), _nodeAllocator(), _endNodeStack(), _endNode(&_endNodeStack), _front(_endNode), _back(_endNode) {
 			operator=(x);
 		}
 		~list() {
