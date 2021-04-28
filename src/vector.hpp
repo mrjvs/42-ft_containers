@@ -153,8 +153,8 @@ namespace ft {
 		typedef typename allocator_type::size_type			size_type;
 		typedef vectorIterator<T, Alloc, vector<value_type>, vector<value_type> &, vector<value_type> *, value_type, difference_type, reference, pointer>							iterator;
 		typedef vectorIterator<T, Alloc, vector<value_type>, const vector<value_type> &, const vector<value_type> *, value_type, difference_type, const_reference, const_pointer>	const_iterator;
-		typedef std::reverse_iterator<iterator>																															reverse_iterator; // TODO remove reverse_iterator dependency
-		typedef std::reverse_iterator<const_iterator>																													const_reverse_iterator;
+		typedef std::reverse_iterator<iterator>																																		reverse_iterator; // TODO remove reverse_iterator dependency
+		typedef std::reverse_iterator<const_iterator>																																const_reverse_iterator;
 
 	private:
 		allocator_type	_alloc;
