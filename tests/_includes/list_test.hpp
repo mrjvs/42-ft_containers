@@ -4,6 +4,9 @@
 
 #include "main.hpp"
 
+using namespace std;
+using namespace ft;
+
 typedef struct {
 	int data;
 } testStruct;
@@ -472,7 +475,7 @@ private:
 			l2.push_back(5);
 
 			// swap
-			ft::swap(l1, l2);
+			swap(l1, l2);
 			compareList(l1, "3-4-5");
 			compareList(l2, "1-2");
 		}

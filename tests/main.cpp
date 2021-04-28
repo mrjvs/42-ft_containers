@@ -34,6 +34,7 @@ static void	createTypes() {
 	types.insert(testType("queue"));
 	types.insert(testType("stack"));
 	types.insert(testType("vector"));
+	types.insert(testType("deque"));
 }
 
 static void printUsage(std::ostream &o) {
@@ -50,6 +51,7 @@ static void printUsage(std::ostream &o) {
 		" - queue\n"
 		" - stack\n"
 		" - vector\n"
+		" - deque\n"
 	<< std::endl;
 }
 
@@ -120,6 +122,7 @@ static void argParser(int argc, char *argv[]) {
 			else if (test.type == "queue") queue_tests<std::queue<int> >().run();
 			else if (test.type == "stack") stack_tests<std::stack<int> >().run();
 			else if (test.type == "vector") vector_tests<std::vector<int> >().run();
+			else if (test.type == "deque") deque_tests<std::deque<int> >().run();
 		}
 		else if (type == "FT") {
 			if (test.type == "list") list_tests<ft::list<int>, ft::list<testStruct> >().run();
@@ -131,6 +134,7 @@ static void argParser(int argc, char *argv[]) {
 			else if (test.type == "queue") queue_tests<ft::queue<int> >().run();
 			else if (test.type == "stack") stack_tests<ft::stack<int> >().run();
 			else if (test.type == "vector") vector_tests<ft::vector<int> >().run();
+			else if (test.type == "deque") deque_tests<ft::deque<int> >().run();
 		}
 	}
 	end_of_tests();

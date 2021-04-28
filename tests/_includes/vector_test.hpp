@@ -2,6 +2,9 @@
 // Created by jelle on 4/28/2021.
 //
 
+using namespace std;
+using namespace ft;
+
 template <class T>
 class vector_tests {
 private:
@@ -215,6 +218,9 @@ private:
 			l1.swap(l2);
 			compareVector(l1, "");
 			compareVector(l2, "1-2-3");
+			swap(l1, l2);
+			compareVector(l1, "1-2-3");
+			compareVector(l2, "");
 
 			l1.clear();
 			l2.clear();

@@ -14,6 +14,7 @@
 #include "stack.hpp"
 #include "queue.hpp"
 #include "vector.hpp"
+#include "deque.hpp"
 #include <vector>
 #include <unistd.h>
 #include <iostream>
@@ -38,5 +39,6 @@ void	end_of_tests();
 #include "queue_test.hpp"
 #include "stack_test.hpp"
 #include "vector_test.hpp"
+#include "deque_test.hpp"
 
 #endif //MAIN_HPP
