@@ -33,6 +33,7 @@ static void	createTypes() {
 	types.insert(testType("set"));
 	types.insert(testType("queue"));
 	types.insert(testType("stack"));
+	types.insert(testType("vector"));
 }
 
 static void printUsage(std::ostream &o) {
@@ -48,6 +49,7 @@ static void printUsage(std::ostream &o) {
 		" - set\n"
 		" - queue\n"
 		" - stack\n"
+		" - vector\n"
 	<< std::endl;
 }
 
@@ -112,6 +114,7 @@ static void argParser(int argc, char *argv[]) {
 			else if (test.type == "set") set_tests<std::set<int>, std::pair<std::set<int>::iterator, bool> >().run();
 			else if (test.type == "queue") queue_tests<std::queue<int> >().run();
 			else if (test.type == "stack") stack_tests<std::stack<int> >().run();
+			else if (test.type == "vector") vector_tests<std::vector<int> >().run();
 		}
 		else if (type == "FT") {
 			if (test.type == "list") list_tests<ft::list<int>, ft::list<testStruct> >().run();
@@ -122,6 +125,7 @@ static void argParser(int argc, char *argv[]) {
 			else if (test.type == "set") set_tests<ft::set<int>, ft::pair<ft::set<int>::iterator, bool> >().run();
 			else if (test.type == "queue") queue_tests<ft::queue<int> >().run();
 			else if (test.type == "stack") stack_tests<ft::stack<int> >().run();
+			else if (test.type == "vector") vector_tests<ft::vector<int> >().run();
 		}
 	}
 	end_of_tests();
