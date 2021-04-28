@@ -7,10 +7,11 @@ class vector_tests {
 private:
 	int 	num;
 
-	static void compareVector(T &vec, const std::string &result) {
+	template<class iterator>
+	static void compareVector(iterator start, iterator last, const std::string &result) {
 		std::stringstream ss;
 		int i = 0;
-		for (typename T::iterator it = vec.begin(); it != vec.end(); ++it) {
+		for (iterator it = start; it != last; ++it) {
 			if (i != 0)
 				ss << "-";
 			ss << *it;
@@ -18,6 +19,10 @@ private:
 		}
 		if (ss.str() != result)
 			fail_test();
+	}
+
+	static void compareVector(T &vec, const std::string &result) {
+		compareVector<typename T::iterator>(vec.begin(), vec.end(), result);
 	}
 
 	void constructTests() {
@@ -62,10 +67,113 @@ private:
 	}
 
 	void iteratorTests() {
-		test("iterator usage tests");
+		test("iterator basic usage tests");
 		{
-			// TODO iterator tests
-			// TODO random access tests
+			T l1;
+			l1.push_back(1);
+			l1.push_back(2);
+			l1.push_back(3);
+			const T &l2 = l1;
+
+			compareVector<typename T::iterator>(l1.begin(), l1.end(), "1-2-3");
+			compareVector<typename T::reverse_iterator>(l1.rbegin(), l1.rend(), "3-2-1");
+			compareVector<typename T::const_iterator>(l2.begin(), l2.end(), "1-2-3");
+			compareVector<typename T::const_reverse_iterator>(l2.rbegin(), l2.rend(), "3-2-1");
+		}
+		end_test();
+		test("iterator increment/decrement");
+		{
+			int tmpList[] = {1,2,3,4,5,6,7,8,9,10};
+			T l1(tmpList, tmpList+9);
+			typename T::iterator it = l1.begin();
+
+			// ++ and --
+			if (*(it++) != 1) fail_test();
+			if (*it != 2) fail_test();
+			if (*(++it) != 3) fail_test();
+			if (*(it--) != 3) fail_test();
+			if (*(it) != 2) fail_test();
+			if (*(--it) != 1) fail_test();
+
+			// +=pos and +=neg
+			it += 2;
+			if (*it != 3) fail_test();
+			it += -2;
+			if (*it != 1) fail_test();
+			if (*(it += 2) != 3) fail_test();
+
+			// -=pos and -=neg
+			it -= 2;
+			if (*it != 1) fail_test();
+			it -= -2;
+			if (*it != 3) fail_test();
+			if (*(it -= 2) != 1) fail_test();
+			it += 2;
+			if (*it != 3) fail_test();
+
+			// it+n and it-n
+			if (*(it + 2) != 5) fail_test();
+			if (*(it + -2) != 1) fail_test();
+			if (*(it - 2) != 1) fail_test();
+			if (*(it - (-2)) != 5) fail_test();
+
+			// it-it
+			if ((it + 3) - (it) != 3) fail_test();
+			if ((it) - (it+3) != -3) fail_test();
+
+			// n+it
+			if (*(3+it) != 6) fail_test();
+			if (*(-1+it) != 2) fail_test();
+		}
+		end_test();
+		test("iterator access tests");
+		{
+			int tmpList[] = {1,2,3,4,5,6,7,8,9,10};
+			T l1(tmpList, tmpList+9);
+			typename T::iterator it = l1.begin();
+			it+=3;
+			if (*it != 4) fail_test();
+			if (it[0] != 4) fail_test();
+			if (it[-1] != 3) fail_test();
+			if (it[1] != 5) fail_test();
+			if (it[-3] != 1) fail_test();
+			if (it[3] != 7) fail_test();
+		}
+		end_test();
+		test("iterator comparison tests");
+		{
+			int tmpList[] = {1,2,3,4,5,6,7,8,9,10};
+			T l1(tmpList, tmpList+9);
+			typename T::iterator start = l1.begin();
+			typename T::iterator mid = l1.begin()+5;
+			typename T::iterator mid2 = l1.begin()+5;
+			typename T::iterator end = l1.begin()+7;
+
+			// <
+			if (!(start < mid)) fail_test();
+			if (mid2 < mid) fail_test();
+			if (end < mid) fail_test();
+
+			// <=
+			if (!(start <= mid)) fail_test();
+			if (!(mid2 <= mid)) fail_test();
+			if (end <= mid) fail_test();
+
+			// >
+			if (start > mid) fail_test();
+			if (mid2 > mid) fail_test();
+			if (!(end > mid)) fail_test();
+
+			// >=
+			if (start >= mid) fail_test();
+			if (!(mid2 >= mid)) fail_test();
+			if (!(end >= mid)) fail_test();
+
+			// == and !=
+			if (start == mid) fail_test();
+			if (!(start != mid)) fail_test();
+			if (!(mid2 == mid)) fail_test();
+			if (mid2 != mid) fail_test();
 		}
 		end_test();
 	}
@@ -239,12 +347,14 @@ private:
 	}
 
 public:
+
 	void run() {
 		start_batch("vector");
 		constructTests();
 		modifierTests();
 		capacitytests();
 		accessTests();
+		iteratorTests();
 		nonUsedFunctions();
 	}
 

@@ -12,6 +12,134 @@
 
 namespace ft {
 
+	template <class T, class Alloc>
+	class vector;
+
+	// random access iterator
+	template<class T, class Alloc, class containerT, typename containerReferenceT, typename containerPointerT, typename value_typeT, typename difference_typeT, typename referenceT, typename pointerT>
+	class vectorIterator {
+	public:
+		friend class vector<T, Alloc>;
+
+		typedef difference_typeT				difference_type;
+		typedef value_typeT						value_type;
+		typedef referenceT						reference;
+		typedef pointerT						pointer;
+		typedef std::random_access_iterator_tag	iterator_category;
+
+	private:
+		typedef containerT						container;
+		typedef containerReferenceT				container_reference;
+		typedef containerPointerT				container_pointer;
+		typedef typename containerT::size_type	size_type;
+
+		container_pointer _cont;
+		size_type _index;
+
+	public:
+		vectorIterator() : _cont(0), _index(0) {}
+		vectorIterator(containerReferenceT ref, size_type index = 0) : _cont(&ref), _index(index) {}
+		vectorIterator(const vectorIterator &it) : _cont(it._cont), _index(it._index) {}
+		~vectorIterator() {}
+
+		vectorIterator &operator=(const vectorIterator &it) {
+			if (&it == this)
+				return *this;
+			_cont = it._cont;
+			_index = it._index;
+			return *this;
+		}
+
+		bool operator==(const vectorIterator &it) const {
+			return it._cont == _cont && it._index == _index;
+		}
+
+		bool operator!=(const vectorIterator &it) const {
+			return !operator==(it);
+		}
+
+		vectorIterator &operator++() {
+			if (_index >= _cont->size())
+				throw std::out_of_range("iterator::out_of_range");
+			_index++;
+			return *this;
+		}
+
+		vectorIterator operator++(int) {
+			vectorIterator copy(*this);
+			++(*this);
+			return copy;
+		}
+
+		vectorIterator &operator--() {
+			if (_index == 0)
+				throw std::out_of_range("iterator::out_of_range");
+			_index--;
+			return *this;
+		}
+
+		vectorIterator operator--(int) {
+			vectorIterator copy(*this);
+			--(*this);
+			return copy;
+		}
+
+		vectorIterator &operator+=(difference_type rhs) {
+			if (rhs < 0)
+				return operator-=(rhs*-1);
+			for (difference_type i = 0; i < rhs; ++i)
+				operator++();
+			return *this;
+		}
+		vectorIterator &operator-=(difference_type rhs) {
+			if (rhs < 0)
+				return operator+=(rhs*-1);
+			for (difference_type i = 0; i < rhs; ++i)
+				operator--();
+			return *this;
+		}
+		vectorIterator operator+(const difference_type &rhs) const {
+			vectorIterator lhs = *this;
+			lhs+=rhs;
+			return lhs;
+		}
+		vectorIterator operator-(const difference_type &rhs) const {
+			vectorIterator lhs = *this;
+			lhs-=rhs;
+			return lhs;
+		}
+		difference_type operator-(const vectorIterator &rhs) const {
+			return ((difference_type)_index) - rhs._index;
+		}
+
+		bool operator<(const vectorIterator &rhs) const {
+			return operator-(rhs) < 0;
+		}
+		bool operator<=(const vectorIterator &rhs) const {
+			return operator-(rhs) <= 0;
+		}
+		bool operator>(const vectorIterator &rhs) const {
+			return operator-(rhs) > 0;
+		}
+		bool operator>=(const vectorIterator &rhs) const {
+			return operator-(rhs) >= 0;
+		}
+
+		reference operator*() const {
+			return (*_cont)[_index];
+		}
+
+		reference operator[](difference_type rhs) const {
+			vectorIterator it = *this;
+			it+=rhs;
+			return *it;
+		}
+
+		pointer operator->() const {
+			return &(**this);
+		}
+	};
+
 	template<class T, class Alloc = std::allocator<T> >
 	class vector {
 	public:
@@ -23,89 +151,8 @@ namespace ft {
 		typedef typename allocator_type::const_pointer		const_pointer;
 		typedef typename allocator_type::difference_type	difference_type;
 		typedef typename allocator_type::size_type			size_type;
-
-	private:
-		// random access iterator
-		template<class containerT, typename containerReferenceT, typename containerPointerT, typename value_typeT, typename difference_typeT, typename referenceT, typename pointerT>
-		class vectorIterator {
-		public:
-			friend class vector;
-
-			typedef difference_typeT				difference_type;
-			typedef value_typeT						value_type;
-			typedef referenceT						reference;
-			typedef pointerT						pointer;
-			typedef std::random_access_iterator_tag	iterator_category;
-
-		private:
-			typedef containerT						container;
-			typedef containerReferenceT				container_reference;
-			typedef containerPointerT				container_pointer;
-			typedef typename containerT::size_type	size_type;
-
-			container_pointer _cont;
-			size_type _index;
-
-		public:
-			vectorIterator() : _cont(0), _index(0) {}
-			vectorIterator(containerReferenceT ref, size_type index = 0) : _cont(&ref), _index(index) {}
-			vectorIterator(const vectorIterator &it) : _cont(it._cont), _index(it._index) {}
-			~vectorIterator() {}
-
-			vectorIterator &operator=(const vectorIterator &it) {
-				if (&it == this)
-					return *this;
-				_cont = it._cont;
-				_index = it._index;
-				return *this;
-			}
-
-			bool operator==(const vectorIterator &it) const {
-				return it._cont == _cont && it._index == _index;
-			}
-
-			bool operator!=(const vectorIterator &it) const {
-				return !operator==(it);
-			}
-
-			vectorIterator &operator++() {
-				if (_index == _cont->size())
-					throw std::out_of_range("iterator::out_of_range");
-				_index++;
-				return *this;
-			}
-
-			vectorIterator operator++(int) {
-				vectorIterator copy(*this);
-				++(*this);
-				return copy;
-			}
-
-			vectorIterator &operator--() {
-				if (_index == 0)
-					throw std::out_of_range("iterator::out_of_range");
-				_index--;
-				return *this;
-			}
-
-			vectorIterator operator--(int) {
-				vectorIterator copy(*this);
-				--(*this);
-				return copy;
-			}
-
-			reference operator*() const {
-				return (*_cont)[_index];
-			}
-
-			pointer operator->() const {
-				return &(**this);
-			}
-		};
-
-	public:
-		typedef vectorIterator<vector<value_type>, vector<value_type> &, vector<value_type> *, value_type, difference_type, reference, pointer>							iterator;
-		typedef vectorIterator<vector<value_type>, const vector<value_type> &, const vector<value_type> *, value_type, difference_type, const_reference, const_pointer>	const_iterator;
+		typedef vectorIterator<T, Alloc, vector<value_type>, vector<value_type> &, vector<value_type> *, value_type, difference_type, reference, pointer>							iterator;
+		typedef vectorIterator<T, Alloc, vector<value_type>, const vector<value_type> &, const vector<value_type> *, value_type, difference_type, const_reference, const_pointer>	const_iterator;
 		typedef std::reverse_iterator<iterator>																															reverse_iterator; // TODO remove reverse_iterator dependency
 		typedef std::reverse_iterator<const_iterator>																													const_reverse_iterator;
 
@@ -280,11 +327,17 @@ namespace ft {
 		}
 	};
 
+	template<class T, class Alloc, typename A, typename B, typename C, typename D, typename E, typename F, typename G>
+	vectorIterator<T, Alloc, A, B, C, D, E, F, G>	operator+(typename vectorIterator<T, Alloc, A, B, C, D, E, F, G>::difference_type lhs, const vectorIterator<T, Alloc, A, B, C, D, E, F, G> &rhs) {
+		return rhs+lhs;
+	}
+
 	// non member overloads
 	template <class T, class Alloc>
 	void swap(vector<T,Alloc>& x, vector<T,Alloc>& y) {
 		x.swap(y);
 	}
+
 	// TODO comparison
 }
 
