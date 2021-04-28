@@ -19,6 +19,7 @@ All containers added MUST have full test coverage. you can run the tests by runn
 ## todos
  - [ ] make custom reverse iterators
  - [ ] make normal makefile
+ - [ ] add comparisons to vector
  - [X] make tests for stdlib versions (for comparing)
  - [X] no leaks
  - [X] make and use `ft::pair` instead of `std::pair`
@@ -28,8 +29,8 @@ All containers added MUST have full test coverage. you can run the tests by runn
  - [X] full test coverage for `ft::list`
 
 ## containers todo
- - [ ] `ft::vector`
  - [ ] `ft::deque`
+ - [X] `ft::vector`
  - [X] `ft::list`
  - [X] `ft::map`
  - [X] `ft::stack`

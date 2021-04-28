@@ -278,8 +278,11 @@ namespace ft {
 		}
 		template <class InputIterator>
 		void assign(InputIterator first, InputIterator last) {
+			size_type s = 0;
+			for (InputIterator it = first; it != last; ++it)
+				s++;
 			clear();
-			// TODO reserve memory
+			reserve(s);
 			for (; first != last; ++first)
 				push_back(*first);
 		}
@@ -293,24 +296,67 @@ namespace ft {
 			--_size;
 			_alloc.destroy(_data+_size);
 		}
-		// TODO do insert
-//		iterator insert(iterator position, const value_type& val) {
-//
-//		}
-//		void insert(iterator position, size_type n, const value_type& val) {
-//
-//		}
-//		template <class InputIterator>
-//		void insert(iterator position, InputIterator first, InputIterator last) {
-//
-//		}
-		// TODO do erase
-//		iterator erase(iterator position) {
-//
-//		}
-//		iterator erase(iterator first, iterator last) {
-//
-//		}
+
+	private:
+		void	moveData(iterator position, size_type n) {
+			size_type endIndex = _size;
+			size_type startIndex = position._index;
+			resize(_size+n);
+
+			// move all items from position to end N places up in reverse order
+			for (; endIndex > startIndex; --endIndex)
+				operator[](endIndex-1+n) = operator[](endIndex-1);
+		}
+		void	removeData(iterator position, size_type n) {
+			size_type endIndex = _size;
+			size_type startIndex = position._index;
+			resize(_size+n);
+
+			// move all items from position to end N places up in reverse order
+			for (; endIndex > startIndex; --endIndex)
+				operator[](endIndex-1+n) = operator[](endIndex-1);
+		}
+
+	public:
+		iterator insert(iterator position, const value_type& val) {
+			size_type index = position._index;
+			insert(position, (size_type)1, val);
+			return begin()+index;
+		}
+		void insert(iterator position, size_type n, const value_type& val) {
+			size_type index = position._index;
+			moveData(position, n);
+			for (size_type i = 0; i < n; ++i)
+				operator[](index+i) = val;
+		}
+		template <class InputIterator>
+		void insert(iterator position, InputIterator first, InputIterator last) {
+			size_type n = 0;
+			size_type index = position._index;
+			for (InputIterator it = first; it != last; ++it)
+				n++;
+			moveData(position, n);
+			for (size_type i = 0; i < n;) {
+				operator[](index+i) = *first;
+				++first;
+				++i;
+			}
+		}
+		iterator erase(iterator position) {
+			return erase(position, position+1);
+		}
+		iterator erase(iterator first, iterator last) {
+			size_type lastIndex = first._index;
+			difference_type removedAmount = last - first;
+			while (last != end()) {
+				*first = *last;
+				++first;
+				++last;
+			}
+			for (size_type i = 0; i < removedAmount; ++i)
+				pop_back();
+			return begin()+lastIndex;
+		}
 		void swap(vector& x) {
 			ft::swap(x._data, _data);
 			ft::swap(x._capacity, _capacity);

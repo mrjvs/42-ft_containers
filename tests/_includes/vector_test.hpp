@@ -244,6 +244,63 @@ private:
 			compareVector(l1, "");
 		}
 		end_test();
+		test("insert tests");
+		{
+			int tmpList[] = {1,2,3,4};
+			int tmpList2[] = {12,13,14,15};
+			T l1(tmpList, tmpList+3);
+			compareVector(l1, "1-2-3");
+
+			// single element insert
+			typename T::iterator it = l1.insert(l1.begin(), 42);
+			if (*it != 42) fail_test();
+			compareVector(l1, "42-1-2-3");
+			it = l1.insert(l1.begin()+2, 24);
+			if (*it != 24) fail_test();
+			compareVector(l1, "42-1-24-2-3");
+
+			// insert many
+			l1.insert(l1.begin(), (typename T::size_type)3, 123);
+			compareVector(l1, "123-123-123-42-1-24-2-3");
+			l1.insert(l1.begin()+1, (typename T::size_type)2, 321);
+			compareVector(l1, "123-321-321-123-123-42-1-24-2-3");
+
+			// insert iterator based
+			l1.template insert<int*>(l1.begin(), tmpList2, tmpList2+3);
+			compareVector(l1, "12-13-14-123-321-321-123-123-42-1-24-2-3");
+			l1.template insert<int*>(l1.begin()+5, tmpList2, tmpList2+3);
+			compareVector(l1, "12-13-14-123-321-12-13-14-321-123-123-42-1-24-2-3");
+			l1.template insert<int*>(l1.end(), tmpList2, tmpList2+3);
+			compareVector(l1, "12-13-14-123-321-12-13-14-321-123-123-42-1-24-2-3-12-13-14");
+		}
+		end_test();
+		test("erase tests");
+		{
+			int tmpList[] = {1,2,3,4,5,6,7,8,9,10};
+			T l1(tmpList, tmpList+9);
+			typename T::iterator it;
+			compareVector(l1, "1-2-3-4-5-6-7-8-9");
+
+			// single element erase
+			it = l1.erase(l1.begin());
+			if (*it != 2) fail_test();
+			compareVector(l1, "2-3-4-5-6-7-8-9");
+			it = l1.erase(l1.begin()+2);
+			if (*it != 5) fail_test();
+			compareVector(l1, "2-3-5-6-7-8-9");
+			it = l1.erase(l1.end()-1);
+			if (it != l1.end()) fail_test();
+			compareVector(l1, "2-3-5-6-7-8");
+
+			// erase many
+			it = l1.erase(l1.begin()+1, l1.begin()+4);
+			if (*it != 7) fail_test();
+			compareVector(l1, "2-7-8");
+			it = l1.erase(l1.begin(), l1.end());
+			if (it != l1.end()) fail_test();
+			compareVector(l1, "");
+		}
+		end_test();
 	}
 
 	void capacitytests() {

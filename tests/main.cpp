@@ -102,9 +102,14 @@ static void argParser(int argc, char *argv[]) {
 		}
 	}
 
+	// make type clear in logging
+	if (type == "STD")
+		std::cout << "Running tests on std namespace!" << std::endl;
+	else
+		std::cout << "Running tests on ft namespace!" << std::endl;
+
 	// execute tests
 	for (std::vector<std::string>::iterator it = tests.begin(); it != tests.end(); ++it) {
-		// execute test
 		testType test = *types.find(*it);
 		if (type == "STD") {
 			if (test.type == "list") list_tests<std::list<int>, std::list<testStruct> >().run();
