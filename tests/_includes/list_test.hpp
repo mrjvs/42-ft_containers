@@ -92,9 +92,9 @@ private:
 		end_test();
 		test("iterator operator tests");
 		{
-			testStruct a = {.data = 1};
-			testStruct b = {.data = 2};
-			testStruct c = {.data = 3};
+			testStruct a = {}; a.data = 1;
+			testStruct b = {}; b.data = 2;
+			testStruct c = {}; c.data = 3;
 			T l1;
 			l1.push_back(a.data);
 			l1.push_back(b.data);

@@ -354,7 +354,7 @@ namespace ft {
 				++first;
 				++last;
 			}
-			for (size_type i = 0; i < removedAmount; ++i)
+			for (difference_type i = 0; i < removedAmount; ++i)
 				pop_back();
 			return begin()+lastIndex;
 		}

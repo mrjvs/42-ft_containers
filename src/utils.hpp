@@ -18,7 +18,7 @@ namespace ft {
 		T tmp = a;
 		a = b;
 		b = tmp;
-	};
+	}
 
 	template<class T> struct equal_to {
 		bool operator()(const T &lhs, const T &rhs ) const {

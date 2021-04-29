@@ -443,7 +443,6 @@ namespace ft {
 		template <class Compare>
 		void sort(Compare comp) {
 			size_type loops = size();
-			size_type advance = 0;
 			if (loops < 2) return;
 			// only do sort iteration if more than 1 item left
 			while (loops > 1) {
