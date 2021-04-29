@@ -356,6 +356,7 @@ private:
 			if (l1.size() != 3) fail_test();
 			if (l1.capacity() < 3) fail_test();
 		}
+		end_test();
 		test("reserve tests");
 		{
 			T l1;
