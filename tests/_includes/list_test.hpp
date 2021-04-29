@@ -283,7 +283,7 @@ private:
 	}
 
 	void comparisonTests() {
-		test("equality tests");
+		test("comparison tests");
 		{
 			T l1;
 			l1.push_back(1);

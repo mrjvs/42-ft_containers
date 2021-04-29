@@ -69,6 +69,38 @@ private:
 		end_test();
 	}
 
+	void comparisonTests() {
+		test("comparison tests");
+		{
+			T l1;
+			l1.push_back(1);
+			l1.push_back(2);
+
+			T l2;
+			l2.push_back(1);
+			l2.push_back(2);
+
+			// equality
+			if (l1 != l2) fail_test();
+			if (l1 < l2) fail_test();
+			if (l1 > l2) fail_test();
+			if (!(l1 == l2)) fail_test();
+
+			// inequality
+			l1.push_back(3);
+			if (l1 == l2) fail_test();
+			if (!(l1 != l2)) fail_test();
+
+			// greater/lesser than
+			if (l1 <= l2) fail_test();
+			if (l1 < l2) fail_test();
+			l2.push_back(42);
+			if (l1 >= l2) fail_test();
+			if (l1 > l2) fail_test();
+		}
+		end_test();
+	}
+
 	void modifierTests() {
 		test("pushback/popback tests");
 		{
@@ -188,6 +220,7 @@ public:
 		constructTests();
 		modifierTests();
 		nonUsedFunctions();
+		comparisonTests();
 	}
 
 };

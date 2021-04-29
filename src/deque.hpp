@@ -142,7 +142,59 @@ namespace ft {
 		x.swap(y);
 	}
 
-	// TODO comparisons
+	// operators
+	template <class T, class Alloc>
+	bool operator==(const deque<T,Alloc>& lhs, const deque<T,Alloc>& rhs) {
+		if (lhs.size() != rhs.size())
+			return false;
+		typename deque<T,Alloc>::const_iterator	lhs_it = lhs.begin();
+		typename deque<T,Alloc>::const_iterator	rhs_it = rhs.begin();
+		while (lhs_it != lhs.end() && rhs_it != rhs.end()) {
+			if (*lhs_it != *rhs_it)
+				return false; // not equal, return false
+			++lhs_it;
+			++rhs_it;
+		}
+		return true;
+	}
+
+	template <class T, class Alloc>
+	bool operator!=(const deque<T,Alloc>& lhs, const deque<T,Alloc>& rhs) {
+		return !(lhs==rhs);
+	}
+
+	template <class T, class Alloc>
+	bool operator<(const deque<T,Alloc>& lhs, const deque<T,Alloc>& rhs) {
+		typename deque<T,Alloc>::const_iterator	lhs_it = lhs.begin();
+		typename deque<T,Alloc>::const_iterator	rhs_it = rhs.begin();
+		while (lhs_it != lhs.end() && rhs_it != rhs.end()) {
+			if (*lhs_it != *rhs_it) {
+				return *lhs_it < *rhs_it; // number not equal, return comparison
+			}
+			++lhs_it;
+			++rhs_it;
+		}
+		if (lhs_it == lhs.end() && rhs_it == rhs.end())
+			return false; // equal
+		if (lhs_it == lhs.end())
+			return true; // left is smaller in size
+		return false; // right is smaller in size
+	}
+
+	template <class T, class Alloc>
+	bool operator<=(const deque<T,Alloc>& lhs, const deque<T,Alloc>& rhs) {
+		return !(rhs<lhs);
+	}
+
+	template <class T, class Alloc>
+	bool operator>(const deque<T,Alloc>& lhs, const deque<T,Alloc>& rhs) {
+		return rhs<lhs;
+	}
+
+	template <class T, class Alloc>
+	bool operator>=(const deque<T,Alloc>& lhs, const deque<T,Alloc>& rhs) {
+		return !(lhs<rhs);
+	}
 }
 
 #endif //DEQUE_HPP
