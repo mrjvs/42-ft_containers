@@ -17,8 +17,8 @@ All containers added MUST have full test coverage. you can run the tests by runn
 ```
 
 ## todos
- - [ ] make custom reverse iterators
  - [ ] make normal makefile
+ - [X] make custom reverse iterators
  - [X] add comparisons to vector
  - [X] add comparisons to deque
  - [X] make tests for stdlib versions (for comparing)

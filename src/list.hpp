@@ -9,6 +9,7 @@
 #include <exception> // custom exception class
 #include <iterator> // iterator category
 #include "utils.hpp" // ft::less and ft::swap
+#include "reverse_iterator.hpp" // ft::reverse_iterator
 
 namespace ft {
 
@@ -79,7 +80,7 @@ namespace ft {
 				return *this;
 			}
 			listIterator	operator++(int) {
-				iterator copy(*this);
+				listIterator copy(*this);
 				++(*this);
 				return copy;
 			}
@@ -90,7 +91,7 @@ namespace ft {
 				return *this;
 			}
 			listIterator	operator--(int) {
-				iterator copy(*this);
+				listIterator copy(*this);
 				--(*this);
 				return copy;
 			}
@@ -106,8 +107,8 @@ namespace ft {
 	public:
 		typedef listIterator<value_type, difference_type, reference, pointer>				iterator;
 		typedef listIterator<value_type, difference_type, const_reference, const_pointer>	const_iterator;
-		typedef std::reverse_iterator<iterator>												reverse_iterator; // TODO remove reverse_iterator dependency
-		typedef std::reverse_iterator<const_iterator>										const_reverse_iterator;
+		typedef ft::reverse_iterator<iterator>												reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>										const_reverse_iterator;
 
 	private:
 		typedef typename allocator_type::template rebind<listNode<value_type> >::other	node_allocator;
