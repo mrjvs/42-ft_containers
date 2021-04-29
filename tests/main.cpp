@@ -91,6 +91,7 @@ static void argParser(int argc, char *argv[]) {
 				printUsage(std::cerr);
 				return;
 			}
+			tests.push_back(test->type);
 		}
 	}
 
